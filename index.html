@@ -1,0 +1,736 @@
+<meta charset="utf-8">
+<title>Korean Handwriting</title>
+<meta name="color-scheme" content="light dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --paper:#F4F2EA;
+    --surface:#FCFBF6;
+    --surface-2:#ECE9DD;
+    --ink:#1C1A16;
+    --ink-soft:#57534A;
+    --ink-faint:#8A8576;
+    --line:#DDD8C8;
+    --line-soft:#E9E5D7;
+    --accent:#2C7A68;
+    --accent-deep:#1F5A4D;
+    --accent-soft:#E1EEE9;
+    --seal:#B8462F;
+    --seal-soft:#F5E6E0;
+    --focus:#2C7A68;
+
+    --font-display:"Gowun Batang","Nanum Myeongjo",Georgia,serif;
+    --font-body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+    --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+
+    --s--1:.85rem;
+    --s-0:1rem;
+    --s-1:1.2rem;
+    --s-2:1.55rem;
+    --s-3:2rem;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      color-scheme:dark;
+      --paper:#17140F;
+      --surface:#211D16;
+      --surface-2:#2A251C;
+      --ink:#EFEAE0;
+      --ink-soft:#B4AD9C;
+      --ink-faint:#847E6D;
+      --line:#3A3427;
+      --line-soft:#2C2820;
+      --accent:#6FB6A2;
+      --accent-deep:#4D9683;
+      --accent-soft:#213028;
+      --seal:#E0876F;
+      --seal-soft:#2E2119;
+      --focus:#6FB6A2;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme:dark;
+    --paper:#17140F;
+    --surface:#211D16;
+    --surface-2:#2A251C;
+    --ink:#EFEAE0;
+    --ink-soft:#B4AD9C;
+    --ink-faint:#847E6D;
+    --line:#3A3427;
+    --line-soft:#2C2820;
+    --accent:#6FB6A2;
+    --accent-deep:#4D9683;
+    --accent-soft:#213028;
+    --seal:#E0876F;
+    --seal-soft:#2E2119;
+    --focus:#6FB6A2;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;padding-inline:1.1rem;padding-block:1.1rem 2.4rem;
+    background:var(--paper);color:var(--ink);
+    font-family:var(--font-body);font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--accent-soft);color:var(--ink)}
+  h1,h2{font-family:var(--font-display);font-weight:700;line-height:1.15;text-wrap:balance;margin:0}
+  :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
+
+  .app{max-width:40rem;margin:0 auto}
+
+  header.top{margin-bottom:1.2rem}
+  .eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent-deep);margin:0 0 .3rem}
+  h1{font-size:clamp(1.7rem,5.5vw,2.2rem)}
+  .lede{color:var(--ink-soft);margin:.45rem 0 0;max-width:34rem;font-size:var(--s--1)}
+
+  .tabs{display:flex;gap:.5rem;margin-top:1.1rem}
+  .tab{flex:1;font-family:var(--font-body);font-weight:600;font-size:var(--s-0);
+    padding:.6rem .8rem;border-radius:10px;border:1px solid var(--line);
+    background:var(--surface);color:var(--ink-soft);cursor:pointer;
+    display:flex;align-items:baseline;justify-content:center;gap:.4rem;
+    -webkit-tap-highlight-color:transparent}
+  .tab .n{font-family:var(--font-mono);font-size:.72rem;color:var(--ink-faint)}
+  .tab[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+  .tab[aria-pressed="true"] .n{color:var(--accent-deep)}
+
+  .setrow{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0}
+  .pill{font-family:var(--font-mono);font-size:.74rem;color:var(--ink-soft);
+    background:var(--surface);border:1px solid var(--line);border-radius:999px;
+    padding:.28rem .68rem;cursor:pointer;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+  .pill[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;gap:.8rem;
+    margin:.9rem 0 0;font-family:var(--font-mono);font-size:.78rem;color:var(--ink-soft)}
+  .statusbar .track{flex:1;height:5px;background:var(--surface-2);border-radius:999px;overflow:hidden}
+  .statusbar .track>span{display:block;height:100%;background:var(--accent);border-radius:999px;transition:width .3s}
+  .statusbar button{font:inherit;background:none;border:none;color:var(--ink-faint);
+    text-decoration:underline;cursor:pointer;white-space:nowrap;padding:0}
+  .statusbar button:hover{color:var(--seal)}
+
+  .stage{margin-top:1.1rem;border:1px solid var(--line);border-radius:18px;
+    background:var(--surface);padding:1.3rem 1.1rem 1.5rem;position:relative;overflow:hidden}
+  .stage::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;
+    background:linear-gradient(90deg,var(--accent),transparent 70%)}
+
+  .prompt{text-align:center;margin-bottom:1.2rem;min-height:5.4rem;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem}
+  .p-tag{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:.15rem}
+  .p-cue{font-family:var(--font-mono);font-size:var(--s-2);color:var(--ink);font-weight:500}
+  .p-thai,.p-th{font-size:var(--s--1);color:var(--ink-faint)}
+  .p-en{font-family:var(--font-body);font-weight:700;font-size:var(--s-2);color:var(--ink)}
+  .p-rom{font-family:var(--font-mono);color:var(--accent-deep);font-size:var(--s--1);margin-top:.1rem}
+  .p-play{margin-top:.5rem;display:inline-flex;align-items:center;gap:.35rem;
+    font-family:var(--font-body);font-size:.82rem;color:var(--accent-deep);
+    background:var(--accent-soft);border:1px solid var(--accent);border-radius:999px;
+    padding:.3rem .8rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .p-play svg{width:.9em;height:.9em}
+  .p-play.playing{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
+
+  .board-wrap{display:flex;justify-content:center}
+  .board{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:1.1rem;
+    max-width:100%}
+  .wgroup{display:flex;gap:.5rem}
+  canvas.wbox{border-radius:10px;background:var(--surface);touch-action:none;
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair;
+    box-shadow:0 0 0 1px var(--line-soft) inset}
+
+  .revealbar{text-align:center;margin-top:1rem;padding-top:1rem;border-top:1px dashed var(--line)}
+  .revealbar[hidden]{display:none}
+  .revealbar .rw{font-family:var(--font-display);font-size:clamp(2rem,9vw,2.7rem);color:var(--accent-deep)}
+  .revealbar .rmeta{font-family:var(--font-mono);font-size:.8rem;color:var(--ink-faint);margin-top:.2rem}
+
+  .controls{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-top:1.3rem}
+  .ctl{font-family:var(--font-body);font-size:.86rem;padding:.55rem 1.1rem;border-radius:999px;
+    border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;
+    -webkit-tap-highlight-color:transparent}
+  .ctl[hidden]{display:none}
+  .ctl.ghost[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+  .ctl.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .ctl.again{color:var(--seal);border-color:var(--seal);background:var(--seal-soft)}
+  .ctl.got{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep)}
+
+  .donebox{text-align:center;padding:1.6rem 0}
+  .donebox[hidden]{display:none}
+  .donebox p{font-family:var(--font-display);font-size:var(--s-1);margin:0 0 .6rem;color:var(--accent-deep)}
+  .donebox button{font-family:var(--font-body);font-size:.86rem;padding:.5rem 1.1rem;border-radius:999px;
+    border:1px solid var(--accent);background:var(--accent-soft);color:var(--accent-deep);cursor:pointer}
+
+  .howto{margin-top:1.3rem;border:1px solid var(--line);border-radius:14px;background:var(--surface);
+    padding:1rem 1.1rem}
+  .howto summary{cursor:pointer;font-family:var(--font-display);font-size:var(--s-0);
+    color:var(--ink);list-style:none;display:flex;align-items:center;gap:.4rem}
+  .howto summary::-webkit-details-marker{display:none}
+  .howto summary::before{content:"＋";color:var(--accent-deep);font-family:var(--font-mono);
+    font-size:.9em;transition:transform .15s}
+  .howto[open] summary::before{content:"－"}
+  .howto p{color:var(--ink-soft);font-size:var(--s--1);margin:.7rem 0 0}
+  .howto ul{color:var(--ink-soft);font-size:var(--s--1);margin:.5rem 0 0;padding-left:1.1rem}
+  .howto li{margin:.3rem 0}
+
+  footer.foot{margin-top:1.6rem;text-align:center;font-size:.76rem;color:var(--ink-faint)}
+  footer.foot a{color:var(--accent-deep)}
+
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+  @media (max-width:420px){
+    .stage{padding:1.1rem .8rem 1.3rem}
+    canvas.wbox{width:96px!important;height:96px!important}
+    .tabs{gap:.4rem}
+    .tab{padding:.55rem .5rem;font-size:.92rem}
+  }
+</style>
+
+<div class="app">
+  <header class="top">
+    <p class="eyebrow">한글 쓰기 · handwriting</p>
+    <h1>Korean Handwriting</h1>
+    <p class="lede">See the prompt, write the answer with your finger, mouse, or Apple Pencil, then reveal
+      and grade yourself. No auto-checking — your eyes do that part, same as a real workbook.</p>
+
+    <div class="tabs" id="tierTabs" role="tablist">
+      <button class="tab" type="button" data-tier="letters" aria-pressed="true">Letters <span class="n">40</span></button>
+      <button class="tab" type="button" data-tier="words" aria-pressed="false">Words <span class="n">83</span></button>
+    </div>
+
+    <div class="setrow" id="setRow"></div>
+
+    <div class="statusbar">
+      <span id="countLabel">0 / 40 known</span>
+      <div class="track"><span id="trackFill" style="width:0%"></span></div>
+      <button type="button" id="btnResetProgress">reset progress</button>
+    </div>
+  </header>
+
+  <main class="stage" id="stage">
+    <div id="stageInner">
+      <div class="prompt" id="promptBox"></div>
+      <div class="board-wrap"><div class="board" id="board"></div></div>
+      <div class="revealbar" id="revealBar" hidden>
+        <div class="rw" id="revealWord"></div>
+        <div class="rmeta" id="revealMeta"></div>
+      </div>
+      <div class="controls">
+        <button class="ctl ghost" type="button" id="btnGuide" aria-pressed="false">Show guide</button>
+        <button class="ctl" type="button" id="btnUndo">Undo</button>
+        <button class="ctl" type="button" id="btnClear">Clear</button>
+        <button class="ctl primary" type="button" id="btnReveal">Reveal answer</button>
+        <button class="ctl again" type="button" id="btnAgain" hidden>↻ Again</button>
+        <button class="ctl got" type="button" id="btnGot" hidden>✓ Got it</button>
+      </div>
+    </div>
+    <div class="donebox" id="doneBox" hidden>
+      <p>Set cleared.</p>
+      <button type="button" id="btnDoneRestart">shuffle &amp; restart</button>
+    </div>
+  </main>
+
+  <details class="howto">
+    <summary>How this works</summary>
+    <p>Every prompt hides the Hangul. <strong>Letters</strong> gives you the sound of a letter (e.g. "g / k")
+      and asks for the syllable block used to teach it (e.g. 가). <strong>Words</strong> gives you the English
+      meaning and asks for the whole word, one syllable per box.</p>
+    <ul>
+      <li>Write first, from memory. Tap <strong>Show guide</strong> only if you're stuck — it traces a faint
+        copy of the answer inside the box for you to draw over.</li>
+      <li>Tap <strong>Reveal answer</strong> to check your own writing against the real word, then mark
+        <strong>✓ Got it</strong> or <strong>↻ Again</strong> honestly. Missed ones come back around sooner.</li>
+      <li>On iPad, draw with Apple Pencil for the most natural line — finger and mouse work too.</li>
+      <li>Progress is saved on this device only, separately for Letters and Words.</li>
+    </ul>
+  </details>
+
+  <footer class="foot">
+    <p>Companion to <strong>60-Day Survival Korean</strong> — practice the writing side here, the speaking
+      side there.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------------------------------------------------------------
+  // data
+  // ---------------------------------------------------------------
+  var HANGUL_DECK = [
+    ["ㄱ","g / k","ก / ค","가","c"],["ㄴ","n","น","나","c"],["ㄷ","d / t","ด / ท","다","c"],
+    ["ㄹ","r / l","ร / ล","라","c"],["ㅁ","m","ม","마","c"],["ㅂ","b / p","บ / พ","바","c"],
+    ["ㅅ","s","ส","사","c"],["ㅇ","silent · final ng","อ (เงียบ) · ท้าย ง","아","c"],
+    ["ㅈ","j","จ","자","c"],["ㅊ","ch (aspirated)","ช","차","c"],["ㅋ","k (aspirated)","ค","카","c"],
+    ["ㅌ","t (aspirated)","ท","타","c"],["ㅍ","p (aspirated)","พ","파","c"],["ㅎ","h","ฮ","하","c"],
+    ["ㄲ","kk (tense)","ก เกร็งคอ ไม่พ่นลม","까","t"],["ㄸ","tt (tense)","ต เกร็งคอ ไม่พ่นลม","따","t"],
+    ["ㅃ","pp (tense)","ป เกร็งคอ ไม่พ่นลม","빠","t"],["ㅆ","ss (tense)","ส เน้น เกร็ง","싸","t"],
+    ["ㅉ","jj (tense)","จ เกร็งคอ ไม่พ่นลม","짜","t"],
+    ["ㅏ","a — father","อา","아","v"],["ㅑ","ya","ยา","야","v"],["ㅓ","eo — uh","เออ","어","v"],
+    ["ㅕ","yeo","ยอ","여","v"],["ㅗ","o — go","โอ","오","v"],["ㅛ","yo","โย","요","v"],
+    ["ㅜ","u — moon","อู","우","v"],["ㅠ","yu","ยู","유","v"],["ㅡ","eu — lips flat","อือ","으","v"],
+    ["ㅣ","i — see","อี","이","v"],["ㅐ","ae — bed","แอ","애","v"],["ㅒ","yae","แย","얘","v"],
+    ["ㅔ","e — bed","เอ","에","v"],["ㅖ","ye","เย","예","v"],["ㅘ","wa","วา","와","v"],
+    ["ㅙ","wae","แว","왜","v"],["ㅚ","oe — we","เว","외","v"],["ㅝ","wo","วอ","워","v"],
+    ["ㅞ","we","เว","웨","v"],["ㅟ","wi","วี","위","v"],["ㅢ","ui","อึย","의","v"]
+  ];
+
+  // [korean, romanization, english, category, thai reading]
+  var VOCAB_DECK = [
+    ["안녕하세요","an-nyeong-ha-se-yo","hello","grt","อันนยองฮาเซโย"],
+    ["안녕히 가세요","an-nyeong-hi ga-se-yo","goodbye (to the one leaving)","grt","อันนยองฮี กาเซโย"],
+    ["안녕히 계세요","an-nyeong-hi gye-se-yo","goodbye (said by the one leaving)","grt","อันนยองฮี เกยเซโย"],
+    ["감사합니다","gam-sa-ham-ni-da","thank you","grt","กัมซาฮับนีดา"],
+    ["죄송합니다","joe-song-ham-ni-da","sorry","grt","เจวโซงฮับนีดา"],
+    ["실례합니다","sil-lye-ham-ni-da","excuse me","grt","ชิลเรยฮับนีดา"],
+    ["네","ne","yes","grt","เน"],
+    ["아니요","a-ni-yo","no","grt","อานีโย"],
+    ["반갑습니다","ban-gap-seum-ni-da","nice to meet you","grt","บันกับซึบนีดา"],
+    ["괜찮아요","gwaen-cha-na-yo","it's okay / no thanks","grt","แกวนชันอาโย"],
+    ["저","jeo","I / me","ppl","จอ"],
+    ["이름","i-reum","name","ppl","อีรึม"],
+    ["사람","sa-ram","person","ppl","ซารัม"],
+    ["친구","chin-gu","friend","ppl","ชินกู"],
+    ["학생","hak-saeng","student","ppl","ฮักแซง"],
+    ["태국","tae-guk","Thailand","ppl","แทกุก"],
+    ["한국","han-guk","Korea","ppl","ฮันกุก"],
+    ["일","il","one (Sino-Korean)","num","อิล"],
+    ["이","i","two (Sino-Korean)","num","อี"],
+    ["삼","sam","three (Sino-Korean)","num","ซัม"],
+    ["하나","ha-na","one (Native Korean)","num","ฮานา"],
+    ["둘","dul","two (Native Korean)","num","ดุล"],
+    ["셋","set","three (Native Korean)","num","เซต"],
+    ["원","won","won (currency)","num","วอน"],
+    ["얼마예요?","eol-ma-ye-yo","how much is it?","num","ออลมาเยโย?"],
+    ["카드","ka-deu","card","num","คาดือ"],
+    ["현금","hyeon-geum","cash","num","ฮยอนกึม"],
+    ["지금","ji-geum","now","time","จีกึม"],
+    ["오늘","o-neul","today","time","โอนึล"],
+    ["내일","nae-il","tomorrow","time","แนอิล"],
+    ["어제","eo-je","yesterday","time","ออเจ"],
+    ["시","si","o'clock","time","ชี"],
+    ["분","bun","minute","time","บุน"],
+    ["아침","a-chim","morning","time","อาชิม"],
+    ["저녁","jeo-nyeok","evening","time","จอนยอก"],
+    ["주말","ju-mal","weekend","time","จูมัล"],
+    ["여기","yeo-gi","here","place","ยอกี"],
+    ["저기","jeo-gi","there","place","จอกี"],
+    ["어디","eo-di","where","place","ออดี"],
+    ["화장실","hwa-jang-sil","toilet","place","ฮวาจังชิล"],
+    ["지하철역","ji-ha-cheol-lyeok","subway station","place","จีฮาชอรยอก"],
+    ["편의점","pyeo-nui-jeom","convenience store","place","พยอนึยจอม"],
+    ["왼쪽","oen-jjok","left","place","เวนโจก"],
+    ["오른쪽","o-reun-jjok","right","place","โอรึนโจก"],
+    ["근처","geun-cheo","nearby","place","กึนชอ"],
+    ["주세요","ju-se-yo","please give (me)","food","จูเซโย"],
+    ["메뉴","me-nyu","menu","food","เมนยู"],
+    ["물","mul","water","food","มุล"],
+    ["맛있어요","ma-si-sseo-yo","tasty","food","มาชีซอโย"],
+    ["매워요","mae-wo-yo","spicy","food","แมวอโย"],
+    ["계산이요","gye-sa-ni-yo","check, please","food","เกยซานีโย"],
+    ["포장이요","po-jang-i-yo","to go, please","food","โพจาอีโย"],
+    ["이거","i-geo","this","food","อีกอ"],
+    ["가요","ga-yo","go","verb","กาโย"],
+    ["와요","wa-yo","come","verb","วาโย"],
+    ["먹어요","meo-geo-yo","eat","verb","มอกอโย"],
+    ["마셔요","ma-syeo-yo","drink","verb","มาชยอโย"],
+    ["봐요","bwa-yo","see / watch","verb","บวาโย"],
+    ["해요","hae-yo","do","verb","แฮโย"],
+    ["사요","sa-yo","buy","verb","ซาโย"],
+    ["만나요","man-na-yo","meet","verb","มันนาโย"],
+    ["있어요","i-sseo-yo","there is / have","verb","อีซอโย"],
+    ["없어요","eop-seo-yo","there isn't / don't have","verb","ออบออโย"],
+    ["좋아요","jo-a-yo","good","adj","โจฮาโย"],
+    ["비싸요","bi-ssa-yo","expensive","adj","บีซาโย"],
+    ["싸요","ssa-yo","cheap","adj","ซาโย"],
+    ["커요","keo-yo","big","adj","คอโย"],
+    ["작아요","ja-ga-yo","small","adj","จากาโย"],
+    ["예뻐요","ye-ppeo-yo","pretty","adj","เยปอโย"],
+    ["뜨거워요","tteu-geo-wo-yo","hot (temperature)","adj","ตือกอวอโย"],
+    ["뭐","mwo","what","q","มวอ"],
+    ["누구","nu-gu","who","q","นูกู"],
+    ["언제","eon-je","when","q","ออนเจ"],
+    ["왜","wae","why","q","แว"],
+    ["어떻게","eo-tteo-ke","how","q","ออตอตเก"],
+    ["몇","myeot","how many","q","มยอต"],
+    ["얼마","eol-ma","how much","q","ออลมา"],
+    ["도와주세요","do-wa-ju-se-yo","help me, please","help","โดวาจูเซโย"],
+    ["아파요","a-pa-yo","it hurts / I'm sick","help","อาพาโย"],
+    ["병원","byeong-won","hospital","help","บยอวอน"],
+    ["약국","yak-guk","pharmacy","help","ยักกุก"],
+    ["여권","yeo-gwon","passport","help","ยอกวอน"],
+    ["경찰","gyeong-chal","police","help","กยองชัล"]
+  ];
+
+  var TIER_LETTERS = {
+    key:"letters", deck:HANGUL_DECK, catIndex:4, storageKey:"kw-letters-known",
+    sets:[["all","All 40"],["c","Consonants"],["t","Tense"],["v","Vowels"]]
+  };
+  var TIER_WORDS = {
+    key:"words", deck:VOCAB_DECK, catIndex:3, storageKey:"kw-words-known",
+    sets:[["all","All words"],["grt","Greetings"],["ppl","People"],["num","Numbers"],
+      ["time","Time"],["place","Places"],["food","Food"],["verb","Verbs"],
+      ["adj","Adjectives"],["q","Questions"],["help","Help & emergency"]]
+  };
+
+  // ---------------------------------------------------------------
+  // audio (simplified: single Korean voice, optional slow rate)
+  // ---------------------------------------------------------------
+  var speech = { ok:(typeof window!=="undefined" && "speechSynthesis" in window), voice:null };
+  function pickVoice(){
+    if(!speech.ok) return;
+    var vs = window.speechSynthesis.getVoices() || [];
+    speech.voice = vs.filter(function(v){return v.lang==="ko-KR";})[0] ||
+      vs.filter(function(v){return v.lang && v.lang.toLowerCase().indexOf("ko")===0;})[0] || null;
+  }
+  if(speech.ok){
+    pickVoice();
+    window.speechSynthesis.onvoiceschanged = pickVoice;
+    setTimeout(pickVoice,400); setTimeout(pickVoice,1200);
+  }
+  function speak(text, btn){
+    if(!speech.ok || !text) return;
+    try{ window.speechSynthesis.cancel(); }catch(e){}
+    var u = new window.SpeechSynthesisUtterance(text);
+    u.lang = "ko-KR";
+    if(speech.voice) u.voice = speech.voice;
+    u.rate = 0.85;
+    if(btn){
+      btn.classList.add("playing");
+      u.onend = u.onerror = function(){ btn.classList.remove("playing"); };
+    }
+    try{ window.speechSynthesis.speak(u); }catch(e){}
+  }
+
+  // ---------------------------------------------------------------
+  // writing canvases
+  // ---------------------------------------------------------------
+  var BOX_PX = 116;
+  var guideOn = false;
+  var lastActiveCanvas = null;
+
+  function cssVar(name){
+    try{ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+    catch(e){ return ""; }
+  }
+
+  function drawGuide(c, ctx, px){
+    ctx.clearRect(0,0,px,px);
+    ctx.save();
+    ctx.strokeStyle = cssVar("--line") || "#ccc";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0.5,0.5,px-1,px-1);
+    ctx.setLineDash([3,4]);
+    ctx.beginPath();
+    ctx.moveTo(px/2,3); ctx.lineTo(px/2,px-3);
+    ctx.moveTo(3,px/2); ctx.lineTo(px-3,px/2);
+    ctx.stroke();
+    ctx.restore();
+    if(c._showGuide && c._target){
+      ctx.save();
+      ctx.globalAlpha = 0.28;
+      ctx.fillStyle = cssVar("--ink-faint") || "#999";
+      ctx.font = Math.round(px*0.62)+'px "Gowun Batang", serif';
+      ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(c._target, px/2, px/2 + px*0.045);
+      ctx.restore();
+    }
+  }
+
+  function redraw(c){
+    var px = c._px;
+    var ctx = c._ctx;
+    drawGuide(c, ctx, px);
+    var ink = cssVar("--ink") || "#111";
+    ctx.lineCap = "round"; ctx.lineJoin = "round";
+    c._strokes.forEach(function(stroke){
+      if(stroke.length === 1){
+        ctx.beginPath();
+        ctx.fillStyle = ink;
+        ctx.arc(stroke[0].x, stroke[0].y, (stroke[0].w||4)/2, 0, Math.PI*2);
+        ctx.fill();
+        return;
+      }
+      for(var i=1;i<stroke.length;i++){
+        ctx.strokeStyle = ink;
+        ctx.lineWidth = stroke[i].w || 4;
+        ctx.beginPath();
+        ctx.moveTo(stroke[i-1].x, stroke[i-1].y);
+        ctx.lineTo(stroke[i].x, stroke[i].y);
+        ctx.stroke();
+      }
+    });
+  }
+
+  function attachDrawing(c){
+    var drawing = false, cur = null;
+    function pointFrom(e){
+      var r = c.getBoundingClientRect();
+      var x = (e.clientX - r.left) * (c._px / r.width);
+      var y = (e.clientY - r.top) * (c._px / r.height);
+      var w = 4.2;
+      if(e.pointerType === "pen"){ w = 2.2 + (e.pressure || 0.5) * 6; }
+      else if(e.pointerType === "mouse"){ w = 3.6; }
+      return { x:x, y:y, w:w };
+    }
+    c.addEventListener("pointerdown", function(e){
+      e.preventDefault();
+      drawing = true;
+      lastActiveCanvas = c;
+      cur = [pointFrom(e)];
+      c._strokes.push(cur);
+      try{ c.setPointerCapture(e.pointerId); }catch(err){}
+      redraw(c);
+    });
+    c.addEventListener("pointermove", function(e){
+      if(!drawing) return;
+      e.preventDefault();
+      cur.push(pointFrom(e));
+      redraw(c);
+    });
+    function stop(){ drawing = false; cur = null; }
+    c.addEventListener("pointerup", stop);
+    c.addEventListener("pointercancel", stop);
+    c.addEventListener("pointerleave", function(){ if(drawing) stop(); });
+  }
+
+  function makeCanvas(px){
+    var dpr = Math.max(1, window.devicePixelRatio || 1);
+    var c = document.createElement("canvas");
+    c.className = "wbox";
+    c.style.width = px + "px";
+    c.style.height = px + "px";
+    c.width = Math.round(px * dpr);
+    c.height = Math.round(px * dpr);
+    var ctx = c.getContext("2d");
+    ctx.scale(dpr, dpr);
+    c._ctx = ctx; c._px = px; c._strokes = []; c._target = null; c._showGuide = guideOn;
+    attachDrawing(c);
+    return c;
+  }
+
+  function buildBoard(groups){
+    var board = document.getElementById("board");
+    board.innerHTML = "";
+    board._canvases = [];
+    groups.forEach(function(group){
+      var g = document.createElement("div");
+      g.className = "wgroup";
+      group.forEach(function(ch){
+        var cv = makeCanvas(BOX_PX);
+        cv._target = ch;
+        cv._showGuide = guideOn;
+        g.appendChild(cv);
+        board._canvases.push(cv);
+        redraw(cv);
+      });
+      board.appendChild(g);
+    });
+  }
+
+  // ---------------------------------------------------------------
+  // app state
+  // ---------------------------------------------------------------
+  var state = { tier: TIER_LETTERS, set: "all", queue: [], pos: 0, known: [] };
+
+  function loadKnown(tier){
+    try{
+      var a = JSON.parse(localStorage.getItem(tier.storageKey) || "[]");
+      return Array.isArray(a) ? a : [];
+    }catch(e){ return []; }
+  }
+  function saveKnown(){
+    try{ localStorage.setItem(state.tier.storageKey, JSON.stringify(state.known)); }catch(e){}
+  }
+  function deckFor(){
+    return state.tier.deck.filter(function(r){
+      return state.set === "all" || r[state.tier.catIndex] === state.set;
+    });
+  }
+  function shuffled(a){
+    a = a.slice();
+    for(var i=a.length-1;i>0;i--){
+      var j = Math.floor(Math.random()*(i+1)), t=a[i]; a[i]=a[j]; a[j]=t;
+    }
+    return a;
+  }
+
+  function esc(s){ return String(s); }
+
+  function renderSetRow(){
+    var row = document.getElementById("setRow");
+    row.innerHTML = state.tier.sets.map(function(s){
+      return '<button class="pill" type="button" data-set="'+s[0]+'" aria-pressed="'+
+        (s[0]==="all"?"true":"false")+'">'+esc(s[1])+"</button>";
+    }).join("");
+    row.querySelectorAll(".pill").forEach(function(b){
+      b.addEventListener("click", function(){
+        row.querySelectorAll(".pill").forEach(function(x){
+          x.setAttribute("aria-pressed", x===b ? "true":"false");
+        });
+        state.set = b.getAttribute("data-set");
+        build();
+      });
+    });
+  }
+
+  function groupsFor(item){
+    if(state.tier.key === "letters"){
+      return [[ item[3] ]];
+    }
+    var groups = item[0].split(" ").map(function(g){
+      return g.match(/[가-힣]/g) || [];
+    }).filter(function(g){ return g.length; });
+    return groups.length ? groups : [[ item[0] ]];
+  }
+
+  function renderPrompt(item){
+    var box = document.getElementById("promptBox");
+    box.innerHTML = "";
+    if(state.tier.key === "letters"){
+      var tagText = item[4]==="c" ? "consonant" : item[4]==="t" ? "tense consonant" : "vowel";
+      box.innerHTML =
+        '<div class="p-tag">'+tagText+'</div>'+
+        '<div class="p-cue">'+esc(item[1])+'</div>'+
+        '<div class="p-thai">'+esc(item[2])+'</div>'+
+        '<button type="button" class="p-play" id="btnPlay">'+
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M15 8.5a4 4 0 010 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'+
+          ' hear the syllable</button>';
+    } else {
+      box.innerHTML =
+        '<div class="p-en">'+esc(item[2])+'</div>'+
+        '<div class="p-rom">'+esc(item[1])+'</div>'+
+        '<div class="p-th">'+esc(item[4]||"")+'</div>'+
+        '<button type="button" class="p-play" id="btnPlay">'+
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M15 8.5a4 4 0 010 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'+
+          ' hear the word</button>';
+    }
+    var playTarget = state.tier.key === "letters" ? item[3] : item[0];
+    var pb = document.getElementById("btnPlay");
+    if(pb) pb.addEventListener("click", function(){ speak(playTarget, pb); });
+  }
+
+  function updateStatus(){
+    var full = deckFor(), total = full.length;
+    var known = full.filter(function(r){ return state.known.indexOf(r[0]) > -1; }).length;
+    document.getElementById("countLabel").textContent = known + " / " + total + " known";
+    document.getElementById("trackFill").style.width = (total ? Math.round(known/total*100) : 0) + "%";
+  }
+
+  function current(){ return state.queue[state.pos]; }
+
+  function showItem(){
+    var item = current();
+    var stageInner = document.getElementById("stageInner");
+    var doneBox = document.getElementById("doneBox");
+    if(!item){
+      stageInner.hidden = true;
+      doneBox.hidden = false;
+      updateStatus();
+      return;
+    }
+    stageInner.hidden = false;
+    doneBox.hidden = true;
+    renderPrompt(item);
+    buildBoard(groupsFor(item));
+    document.getElementById("revealBar").hidden = true;
+    document.getElementById("btnReveal").hidden = false;
+    document.getElementById("btnAgain").hidden = true;
+    document.getElementById("btnGot").hidden = true;
+    updateStatus();
+  }
+
+  function reveal(){
+    var item = current();
+    if(!item) return;
+    var target = state.tier.key === "letters" ? item[3] : item[0];
+    document.getElementById("revealWord").textContent = target;
+    document.getElementById("revealMeta").textContent =
+      state.tier.key === "letters" ? (item[1] + " · " + item[2]) : (item[1] + " · " + (item[4]||""));
+    document.getElementById("revealBar").hidden = false;
+    document.getElementById("btnReveal").hidden = true;
+    document.getElementById("btnAgain").hidden = false;
+    document.getElementById("btnGot").hidden = false;
+    speak(target);
+  }
+
+  function grade(know){
+    var item = current();
+    if(!item) return;
+    if(know){
+      if(state.known.indexOf(item[0]) < 0){ state.known.push(item[0]); saveKnown(); }
+      state.pos++;
+    } else {
+      var it = state.queue.splice(state.pos,1)[0];
+      var at = Math.min(state.pos+4, state.queue.length);
+      state.queue.splice(at,0,it);
+    }
+    showItem();
+  }
+
+  function build(){
+    state.queue = shuffled(deckFor());
+    state.pos = 0;
+    showItem();
+  }
+
+  function setGuide(on){
+    guideOn = on;
+    var board = document.getElementById("board");
+    (board._canvases || []).forEach(function(c){ c._showGuide = on; redraw(c); });
+  }
+
+  function undo(){
+    if(!lastActiveCanvas) return;
+    lastActiveCanvas._strokes.pop();
+    redraw(lastActiveCanvas);
+  }
+  function clearAll(){
+    var board = document.getElementById("board");
+    (board._canvases || []).forEach(function(c){ c._strokes = []; redraw(c); });
+  }
+
+  // ---------------------------------------------------------------
+  // wire up
+  // ---------------------------------------------------------------
+  document.querySelectorAll("#tierTabs .tab").forEach(function(b){
+    b.addEventListener("click", function(){
+      document.querySelectorAll("#tierTabs .tab").forEach(function(x){
+        x.setAttribute("aria-pressed", x===b ? "true":"false");
+      });
+      state.tier = b.getAttribute("data-tier") === "letters" ? TIER_LETTERS : TIER_WORDS;
+      state.set = "all";
+      state.known = loadKnown(state.tier);
+      renderSetRow();
+      build();
+    });
+  });
+
+  document.getElementById("btnGuide").addEventListener("click", function(){
+    var on = this.getAttribute("aria-pressed") !== "true";
+    this.setAttribute("aria-pressed", on ? "true":"false");
+    this.textContent = on ? "Hide guide" : "Show guide";
+    setGuide(on);
+  });
+  document.getElementById("btnUndo").addEventListener("click", undo);
+  document.getElementById("btnClear").addEventListener("click", clearAll);
+  document.getElementById("btnReveal").addEventListener("click", reveal);
+  document.getElementById("btnAgain").addEventListener("click", function(){ grade(false); });
+  document.getElementById("btnGot").addEventListener("click", function(){ grade(true); });
+  document.getElementById("btnDoneRestart").addEventListener("click", build);
+  document.getElementById("btnResetProgress").addEventListener("click", function(){
+    state.known = [];
+    saveKnown();
+    updateStatus();
+  });
+
+  // ---------------------------------------------------------------
+  // boot
+  // ---------------------------------------------------------------
+  state.known = loadKnown(state.tier);
+  renderSetRow();
+  build();
+})();
+</script>
