@@ -75,7 +75,9 @@
     background:var(--paper);color:var(--ink);
     font-family:var(--font-body);font-size:16px;line-height:1.5;
     -webkit-font-smoothing:antialiased;
+    -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
   }
+  .howto{-webkit-user-select:text;user-select:text}
   ::selection{background:var(--accent-soft);color:var(--ink)}
   h1,h2{font-family:var(--font-display);font-weight:700;line-height:1.15;text-wrap:balance;margin:0}
   :focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:3px}
@@ -133,10 +135,10 @@
   .p-play.playing{animation:pulse 1s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
 
-  .board-wrap{display:flex;justify-content:center}
+  .board-wrap{display:flex;justify-content:center;touch-action:none}
   .board{display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-start;gap:1.1rem;
-    max-width:100%}
-  .wgroup{display:flex;gap:.5rem}
+    max-width:100%;touch-action:none}
+  .wgroup{display:flex;gap:.5rem;touch-action:none}
   canvas.wbox{border-radius:10px;background:var(--surface);touch-action:none;
     -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;cursor:crosshair;
     box-shadow:0 0 0 1px var(--line-soft) inset}
@@ -494,6 +496,12 @@
     c.addEventListener("pointerup", stop);
     c.addEventListener("pointercancel", stop);
     c.addEventListener("pointerleave", function(){ if(drawing) stop(); });
+    // iPadOS can mistake a brief pause mid-stroke for a text-selection or
+    // Scribble gesture; block every native gesture that could hijack the pencil
+    c.addEventListener("contextmenu", function(e){ e.preventDefault(); });
+    c.addEventListener("selectstart", function(e){ e.preventDefault(); });
+    c.addEventListener("touchstart", function(e){ e.preventDefault(); }, { passive:false });
+    c.addEventListener("touchmove", function(e){ e.preventDefault(); }, { passive:false });
   }
 
   function makeCanvas(px){
@@ -578,7 +586,7 @@
 
   function groupsFor(item){
     if(state.tier.key === "letters"){
-      return [[ item[3] ]];
+      return [[ item[0] ]];
     }
     var groups = item[0].split(" ").map(function(g){
       return g.match(/[가-힣]/g) || [];
@@ -645,15 +653,20 @@
   function reveal(){
     var item = current();
     if(!item) return;
-    var target = state.tier.key === "letters" ? item[3] : item[0];
-    document.getElementById("revealWord").textContent = target;
+    // the writing target is the bare letter for Letters, the full word for Words;
+    // a lone consonant/vowel jamo isn't reliably spoken by TTS, so audio always
+    // uses the example syllable instead (item[3]) while the reveal still shows
+    // the letter itself, matching what was actually asked for
+    var isLetters = state.tier.key === "letters";
+    var audioTarget = isLetters ? item[3] : item[0];
+    document.getElementById("revealWord").textContent = item[0];
     document.getElementById("revealMeta").textContent =
-      state.tier.key === "letters" ? (item[1] + " · " + item[2]) : (item[1] + " · " + (item[4]||""));
+      isLetters ? (item[1] + " · " + item[2]) : (item[1] + " · " + (item[4]||""));
     document.getElementById("revealBar").hidden = false;
     document.getElementById("btnReveal").hidden = true;
     document.getElementById("btnAgain").hidden = false;
     document.getElementById("btnGot").hidden = false;
-    speak(target);
+    speak(audioTarget);
   }
 
   function grade(know){
